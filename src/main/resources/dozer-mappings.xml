@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+
+<!--
+    <mapping>
+        <class-a>ru.ki.model.ws.ValueABC11</class-a>
+        <class-b>java.util.HashMap</class-b>
+        <field-exclude>
+            <a>fullName</a>
+            <b>this</b>
+        </field-exclude>
+        <field-exclude>
+            <a>document</a>
+            <b>this</b>
+        </field-exclude>
+        <field>
+            <a>fullName.firstName</a>
+            <b key="Имя">this</b>
+        </field>
+    </mapping>
+-->
+
+    <mapping>
+        <class-a>ru.ki.model.ws.ValueABC1</class-a>
+        <class-b>ru.ki.model.entity.EntityA</class-b>
+        <field>
+            <a>b2</a>
+            <b>b1.b2</b>
+        </field>
+        <field>
+            <a>c2</a>
+            <b>b1.c1.c2</b>
+        </field>
+    </mapping>
+
+    <mapping>
+        <class-a>ru.ki.model.ws.PersonalVO</class-a>
+        <class-b>ru.ki.model.entity.Personal</class-b>
+        <field>
+            <a>subdivisionName</a>
+            <b>subdivision.naimSubdiv</b>
+        </field>
+        <field>
+            <a>storeName</a>
+            <b>subdivision.store.naimStore</b>
+        </field>
+        <field>
+            <a>teritory</a>
+            <b>subdivision.store.teritory.naimTer</b>
+        </field>
+    </mapping>
+
+</mappings>
