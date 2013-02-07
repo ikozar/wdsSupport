@@ -115,7 +115,7 @@ public class Realizations {
         Realizations that = (Realizations) o;
 
         if (dateRealiz != null ? !dateRealiz.equals(that.dateRealiz) : that.dateRealiz != null) return false;
-        if (personal != null ? !personal.equals(that.personal) : that.personal != null) return false;
+        if (employee != null ? !employee.equals(that.employee) : that.employee != null) return false;
         if (wares != null ? !wares.equals(that.wares) : that.wares != null) return false;
 
         return true;
@@ -124,7 +124,7 @@ public class Realizations {
     @Override
     public int hashCode() {
         int result = dateRealiz != null ? dateRealiz.hashCode() : 0;
-        result = 31 * result + (personal != null ? personal.hashCode() : 0);
+        result = 31 * result + (employee != null ? employee.hashCode() : 0);
         result = 31 * result + (wares != null ? wares.hashCode() : 0);
         return result;
     }
@@ -142,16 +142,16 @@ public class Realizations {
         this.wares = wares;
     }
 
-    private Personal personal;
+    private Employee employee;
 
     @ManyToOne(fetch = FetchType.LAZY)
     public
-    @javax.persistence.JoinColumn(name = "id_pers", referencedColumnName = "id_pers", nullable = false)
-    Personal getPersonal() {
-        return personal;
+    @javax.persistence.JoinColumn(name = "id_employee", referencedColumnName = "id_employee", nullable = false)
+    Employee getEmployee() {
+        return employee;
     }
 
-    public void setPersonal(Personal personal) {
-        this.personal = personal;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 }

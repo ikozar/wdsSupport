@@ -1,6 +1,9 @@
 
 package ru.ki.dao.support;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.dozer.util.MappingUtils;
+
 import java.util.Date;
 
 public class ValueType {
@@ -88,4 +91,28 @@ public class ValueType {
         else valueObject = value;
     }
 
+    public void clearValue() {
+        valueString = null;
+        valueInt = null;
+        valueLong = null;
+        valueFloat = null;
+        valueDouble = null;
+        valueDate = null;
+        valueObject = null;
+    }
+
+    public void convertTo(Class javaType) {
+        Object value = getValue();
+        if (javaType.isEnum()) {
+            try {
+                value = Enum.valueOf(javaType, value.toString());
+            } catch (Exception e) {
+                throw new RuntimeException("Enum " + javaType.getSimpleName() +
+                    '.' + value.toString() + " not found");
+            }
+        }
+        value = ConvertUtils.convert(value, javaType);
+        clearValue();
+        setValue(value);
+    }
 }

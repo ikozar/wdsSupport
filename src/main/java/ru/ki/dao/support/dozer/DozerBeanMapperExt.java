@@ -5,9 +5,11 @@ import org.dozer.MappingProcessor;
 import org.dozer.classmap.ClassMap;
 import org.dozer.classmap.ClassMappings;
 import org.dozer.fieldmap.FieldMap;
+import org.dozer.loader.api.BeanMappingBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Tuple;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -59,15 +61,33 @@ public class DozerBeanMapperExt extends DozerBeanMapper {
         }
     }
 
-    public List<FieldMap> getFieldsMap(Class<?> srcClass, Class<?> destClass, String mapId) {
+    public ClassMap getClassMap(final Class<?> srcClass, Class<?> destClass, String mapId) {
         try {
             if (getClassMapMethod != null) {
-                return  ((ClassMap) getClassMapMethod.invoke((MappingProcessor) getMappingProcessor(), new Object[] {srcClass, destClass, mapId})).getFieldMaps();
+                ClassMap classMap = (ClassMap) getClassMapMethod.invoke((MappingProcessor) getMappingProcessor(), new Object[] {srcClass, destClass, mapId});
+                if (classMap == null && Tuple.class.isAssignableFrom(srcClass)) {
+                    addMapping(new BeanMappingBuilder() {
+                        @Override
+                        protected void configure() {
+                            mapping(srcClass, Tuple.class);
+                        }}
+                    );
+                    classMap = (ClassMap) getClassMapMethod.invoke((MappingProcessor) getMappingProcessor(), new Object[] {srcClass, destClass, mapId});
+                }
+                return classMap;
             }
         } catch (IllegalAccessException e) {
             logger.error("IllegalAccessException " + e.getMessage());
         } catch (InvocationTargetException e) {
             logger.error("InvocationTargetException " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<FieldMap> getFieldsMap(Class<?> srcClass, Class<?> destClass, String mapId) {
+        ClassMap classMap = getClassMap(srcClass, destClass, mapId);
+        if (classMap != null) {
+            return  classMap.getFieldMaps();
         }
         return Collections.EMPTY_LIST;
     }

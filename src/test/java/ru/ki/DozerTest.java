@@ -1,12 +1,7 @@
 package ru.ki;
 
 import org.dozer.DozerBeanMapper;
-import org.dozer.DozerConverter;
-import org.dozer.classmap.ClassMap;
-import org.dozer.classmap.ClassMapBuilder;
-import org.dozer.loader.DozerBuilder;
 import org.dozer.loader.api.BeanMappingBuilder;
-import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -17,13 +12,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.ki.dao.PersonalDao;
+import org.springframework.transaction.annotation.Transactional;
+import ru.ki.dao.EmployeeDao;
 import ru.ki.dao.support.FindResult;
 import ru.ki.dao.support.RestrictionType;
 import ru.ki.dao.support.SearchParameters;
-import ru.ki.dao.support.dozer.DozerSupport;
 import ru.ki.model.entity.*;
-import ru.ki.model.ws.PersonalVO;
+import ru.ki.model.ws.EmployeeVO;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,31 +27,34 @@ import static org.junit.Assert.assertTrue;
 public class DozerTest extends DBTest {
 
     @Autowired
-    PersonalDao personalDao;
+    EmployeeDao employeeDao;
 
     private Class type;
     SearchParameters sp;
 
-    @After
-    public void check() {
-        FindResult findResult = personalDao.find(sp, type);
+    private static final String TERITORY_FIND = "Мытищи";
+
+//    @After
+    public Object checkResult() {
+        FindResult findResult = employeeDao.find(sp, type);
         assertEquals(findResult.getCount().longValue(), 3L);
         assertTrue(type.isAssignableFrom(findResult.getResultList().get(0).getClass()));
         System.out.println("--- size: " + findResult.getCount() + ", type: " + findResult.getResultList().get(0).getClass().getSimpleName());
+        return findResult.getResultList().get(0);
     }
 
     private SearchParameters preparePersonalFilter(Class type) {
         this.type = type;
         sp = new SearchParameters();
-        sp.parameter("fioPers", "Persona11", RestrictionType.START);
+        sp.parameter("fullName", "Persona11", RestrictionType.START);
         sp.parameter("prSex", PrSex.MAN);
-        if (type == Personal.class) {
-            sp.parameter("subdivision.store.teritory.naimTer", "Мытищи");
-        } else if (type == PersonalVO.class) {
-            sp.parameter("teritory", "Мытищи");
-//            sp.parameter("subdivision.store.teritory.naimTer", "Мытищи");
+        if (type == Employee.class) {
+            sp.parameter("subdivision.store.teritory.naimTer", TERITORY_FIND);
+        } else if (type == EmployeeVO.class) {
+            sp.parameter("teritory", TERITORY_FIND);
+//            sp.parameter("subdivision.store.teritory.naimTer", TERITORY_FIND);
         } else {
-            sp.parameter("subdivision.store.teritory.naimTer", "Мытищи");
+            sp.parameter("subdivision.store.teritory.naimTer", TERITORY_FIND);
         }
         return sp;
     }
@@ -64,19 +62,43 @@ public class DozerTest extends DBTest {
     @Test
     public void testFindTuple() {
         SearchParameters sp = preparePersonalFilter(Tuple.class);
-        sp.select("fioPers").select("subdivision.naimSubdiv", "naimSubdiv");
+        sp.select("fullName")
+            .select("subdivision.naimSubdiv", "naimSubdiv")
+            .select("subdivision.store.teritory.naimTer", "teritory");
+        assertEquals(((Tuple) checkResult()).get("teritory"), TERITORY_FIND);
     }
 
     @Test
     public void testFindVO() {
-        SearchParameters sp = preparePersonalFilter(PersonalVO.class);
-        sp.setSelectElements(dozerSupport.getSelectionList(PersonalVO.class, personalDao.getJavaType()));
+        SearchParameters sp = preparePersonalFilter(EmployeeVO.class);
+        sp.setSelectElements(dozerSupport.getSelectionList(EmployeeVO.class, employeeDao.getJavaType()));
+        assertEquals(((EmployeeVO) checkResult()).getTeritory(), TERITORY_FIND);
     }
 
     @Test
+    @Transactional
 //    @Ignore
     public void testFindEntity() {
-        SearchParameters sp = preparePersonalFilter(Personal.class);
+        SearchParameters sp = preparePersonalFilter(Employee.class);
+        assertEquals(((Employee) checkResult()).getSubdivision().getStore().getTeritory().getNaimTer(),
+                TERITORY_FIND);
+    }
+
+    @Test
+    public void testFindQBEVO() {
+        EmployeeVO employeeVO = new EmployeeVO();
+        employeeVO.setPrSex(PrSex.MAN.name());
+        employeeVO.setTeritory(TERITORY_FIND);
+        Map<String, Object> msp = dozerSupport.getDozer().map(employeeVO, Map.class);
+        for (Iterator<Map.Entry<String, Object>> iterator = msp.entrySet().iterator(); iterator.hasNext(); ) {
+            if (iterator.next().getValue() == null)
+                iterator.remove();
+        }
+        SearchParameters sp = new SearchParameters();
+        sp.setParameters(msp);
+        sp.setSelectElements(dozerSupport.getSelectionList(EmployeeVO.class, employeeDao.getJavaType()));
+        FindResult findResult = employeeDao.find(sp, EmployeeVO.class);
+        System.out.println("--- size: " + findResult.getCount() + ", type: " + findResult.getResultList().get(0).getClass().getSimpleName());
     }
 
     @Test
@@ -84,24 +106,24 @@ public class DozerTest extends DBTest {
     public void testQueryBuilder() throws NoSuchFieldException, IllegalAccessException,
             InstantiationException, NoSuchMethodException, InvocationTargetException {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        ManagedType mt = entityManager.getMetamodel().entity(Personal.class);
-        //    CriteriaQuery<PersonalVO> c = cb.createQuery(PersonalVO.class);
+        ManagedType mt = entityManager.getMetamodel().entity(Employee.class);
+        //    CriteriaQuery<EmployeeVO> c = cb.createQuery(EmployeeVO.class);
 
 //        CriteriaQuery cbQuery = cb.createQuery();
-        CriteriaQuery<Personal> cbQuery = cb.createQuery(Personal.class);
-        Root<Personal> root = cbQuery.from(Personal.class);
-        Join<Personal, Subdivision> subdivision = root.join("subdivision");
+        CriteriaQuery<Employee> cbQuery = cb.createQuery(Employee.class);
+        Root<Employee> root = cbQuery.from(Employee.class);
+        Join<Employee, Subdivision> subdivision = root.join("subdivision");
         Join<Subdivision, Store> store = subdivision.join("store");
         Join<Store, Teritory> teritory = store.join("teritory");
-        cbQuery.where(cb.equal(teritory.get("naimTer"), "Мытищи"));
+        cbQuery.where(cb.equal(teritory.get("naimTer"), TERITORY_FIND));
 
 //        cbQuery.select(cb.count(root));
         List l = entityManager.createQuery(cbQuery).getResultList();
         System.out.println("==== " + l.get(0));
 
         CriteriaQuery<Tuple> criteriaQuery = cb.createTupleQuery();
-//        root = criteriaQuery.from(Personal.class);
-        root = criteriaQuery.from(Personal.class);
+//        root = criteriaQuery.from(Employee.class);
+        root = criteriaQuery.from(Employee.class);
         subdivision = root.join("subdivision");
         store = subdivision.join("store");
         teritory = store.join("teritory");
@@ -121,7 +143,7 @@ public class DozerTest extends DBTest {
         BeanMappingBuilder foo = new BeanMappingBuilder() {
             @Override
             protected void configure() {
-                mapping(PersonalVO.class, Tuple.class/*, TypeMappingOptions.oneWay()*/)
+                mapping(EmployeeVO.class, Tuple.class/*, TypeMappingOptions.oneWay()*/)
                         .fields("fioPers", "this")
                         .fields("subdivisionName", field("this").mapKey("subdivision.naimSubdiv"))
                 ;
@@ -129,13 +151,13 @@ public class DozerTest extends DBTest {
         };
         dozer.addMapping(foo);
 
-        PersonalVO c1 = dozer.map(l1.get(0), PersonalVO.class);
+        EmployeeVO c1 = dozer.map(l1.get(0), EmployeeVO.class);
         System.out.printf("--- " + c1);
 /*
         foo = new BeanMappingBuilder() {
             @Override
             protected void configure() {
-                mapping(Tuple.class, PersonalVO.class, TypeMappingOptions.oneWay()).fields(
+                mapping(Tuple.class, EmployeeVO.class, TypeMappingOptions.oneWay()).fields(
                         new FieldDefinition("this"), "createdDt").fields(new FieldDefinition("this"),
                         "titleDocument");
             }
@@ -157,7 +179,7 @@ public class DozerTest extends DBTest {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("createdDt", new Date());
         map.put("titleDocument", "titleDocument");
-        //    PersonalVO c0 = dozer.map(map, PersonalVO.class);
+        //    EmployeeVO c0 = dozer.map(map, EmployeeVO.class);
         //    l.get(0).getElements().get(1);
 */
     }

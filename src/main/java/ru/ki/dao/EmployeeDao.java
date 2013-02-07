@@ -9,11 +9,11 @@ package ru.ki.dao;
 
 import org.springframework.stereotype.Component;
 import ru.ki.dao.support.GenericDao;
-import ru.ki.model.entity.Personal;
+import ru.ki.model.entity.Employee;
 
 @Component
-public class PersonalDao extends GenericDao<Personal, Integer> {
-    public PersonalDao() {
-        super(Personal.class);
+public class EmployeeDao extends GenericDao<Employee, Integer> {
+    public EmployeeDao() {
+        super(Employee.class);
     }
 }

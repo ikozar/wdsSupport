@@ -6,18 +6,18 @@ CREATE TABLE delivery (
     sum_deliv integer
 );
 
-CREATE TABLE personal (
-    id_pers integer NOT NULL,
+CREATE TABLE employee (
+    id_employee integer NOT NULL,
     id_subdiv integer NOT NULL,
-    fio_pers character(50) NOT NULL,
+    full_name character(50) NOT NULL,
     pr_sex smallint NOT NULL,
-    pr_rukovod smallint DEFAULT 0 NOT NULL,
-    date_rozd date NOT NULL
+    emp_type smallint DEFAULT 0 NOT NULL,
+    date_born date NOT NULL
 );
 
 CREATE TABLE realizations (
     id_wares integer,
-    id_pers integer NOT NULL,
+    id_employee integer NOT NULL,
     date_realiz date NOT NULL,
     num_realiz real DEFAULT 1::real NOT NULL,
     sum_realiz real NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE wares (
 CREATE TABLE realizations
 (
   id_wares integer,
-  id_pers integer NOT NULL,
+  id_employee integer NOT NULL,
   date_realiz date NOT NULL,
   num_realiz real NOT NULL,
   sum_realiz real NOT NULL,

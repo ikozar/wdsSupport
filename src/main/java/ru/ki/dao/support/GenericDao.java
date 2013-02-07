@@ -7,6 +7,9 @@
  */
 package ru.ki.dao.support;
 
+//import com.sun.istack.internal.NotNull;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -58,13 +61,14 @@ public abstract class GenericDao<E, PK extends Serializable> {
     }
 
     @SuppressWarnings("unchecked")
+//    public <T> FindResult<T> find(SearchParameters sp, @NotNull Class<T> typeReturn) {
     public <T> FindResult<T> find(SearchParameters sp, Class<T> typeReturn) {
 /*
         if (sp.hasNamedQuery()) {
             return getNamedQueryUtil().findByNamedQuery(sp);
         }
 */
-        FindResult<T> findResult = new FindResult<T>(dozerSupport.getDozer());
+        FindResult<T> findResult = new FindResult<T>(dozerSupport);
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery criteriaQuery;
@@ -137,7 +141,7 @@ public abstract class GenericDao<E, PK extends Serializable> {
     }
 
     private List<Selection<?>> getSelections(SearchParameters sp, Map<String, From> joins) {
-        if (!sp.isCustomSelect()) {
+        if (!sp.isCustomSelect() || sp.getSelectElements().isEmpty()) {
             return Collections.EMPTY_LIST;
         }
         List<Selection<?>> selectionList = new ArrayList<Selection<?>>();
@@ -265,6 +269,11 @@ public abstract class GenericDao<E, PK extends Serializable> {
                     log.error("Not found field " + name + " for restriction");
                 }
                 continue;
+            }
+            if (!att.getJavaType().isAssignableFrom(param.values.get(0).getValue().getClass())) {
+                for (int ip=0; ip<param.values.size(); ip++) {
+                    param.values.get(ip).convertTo(att.getJavaType());
+                }
             }
             predicates.add(param.operator.getCriterion(att, builder, param.values));
         }

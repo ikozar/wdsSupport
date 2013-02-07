@@ -8,30 +8,30 @@ import java.sql.Date;
  * @version 1.0
  */
 @Entity
-//@Table(name = "personal")
-public class Personal {
-    private Integer idPers;
+//@Table(name = "Employee")
+public class Employee {
+    private Integer id;
 
-    @javax.persistence.Column(name = "id_pers")
+    @javax.persistence.Column(name = "id_employee")
     @Id
-    public Integer getIdPers() {
-        return idPers;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdPers(Integer idPers) {
-        this.idPers = idPers;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    private String fioPers;
+    private String fullName;
 
-    @javax.persistence.Column(name = "fio_pers")
+    @javax.persistence.Column(name = "full_name")
     @Basic
-    public String getFioPers() {
-        return fioPers;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFioPers(String fioPers) {
-        this.fioPers = fioPers;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     private PrSex prSex;
@@ -47,29 +47,29 @@ public class Personal {
         this.prSex = prSex;
     }
 
-    private TypeEmployee prRukovod;
+    private TypeEmployee employeeType;
 
-    @javax.persistence.Column(name = "pr_rukovod")
+    @javax.persistence.Column(name = "emp_type")
     @Enumerated(EnumType.ORDINAL)
     @Basic
-    public TypeEmployee getPrRukovod() {
-        return prRukovod;
+    public TypeEmployee getEmployeeType() {
+        return employeeType;
     }
 
-    public void setPrRukovod(TypeEmployee prRukovod) {
-        this.prRukovod = prRukovod;
+    public void setEmployeeType(TypeEmployee employeeType) {
+        this.employeeType = employeeType;
     }
 
-    private Date dateRozd;
+    private Date dateBorn;
 
-    @javax.persistence.Column(name = "date_rozd")
+    @javax.persistence.Column(name = "date_born")
     @Basic
-    public Date getDateRozd() {
-        return dateRozd;
+    public Date getDateBorn() {
+        return dateBorn;
     }
 
-    public void setDateRozd(Date dateRozd) {
-        this.dateRozd = dateRozd;
+    public void setDateBorn(Date dateBorn) {
+        this.dateBorn = dateBorn;
     }
 
     @Override
@@ -77,16 +77,16 @@ public class Personal {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Personal personal = (Personal) o;
+        Employee employee = (Employee) o;
 
-        if (idPers != null ? !idPers.equals(personal.idPers) : personal.idPers != null) return false;
+        if (id != null ? !id.equals(employee.id) : employee.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = idPers != null ? idPers.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         return result;
     }
 
@@ -105,7 +105,7 @@ public class Personal {
 
     @Override
     public String toString() {
-        return getFioPers() + " (" + getPrSex().name() + ')';
+        return getFullName() + " (" + getPrSex().name() + ')';
     }
 
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.ki.dao.support.SelectElement;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.Tuple;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,20 +42,37 @@ public class DozerSupport {
 //        }
     }
 
+    private void checkExt() {
+        if (!(dozer instanceof DozerBeanMapperExt)) {
+            throw new DozerSupportException("Bean DozerBeanMapper not instantiated");
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public List<SelectElement> getSelectionList(Class<?> classVO, Class<?> classJPA) {
-        if (dozer instanceof DozerBeanMapperExt) {
-            List<FieldMap> fieldsMap = ((DozerBeanMapperExt) dozer).getFieldsMap(classVO, classJPA, StringUtils.EMPTY);
-            if (fieldsMap.size() > 0) {
-                List<SelectElement> selectElementList = new ArrayList<SelectElement>(fieldsMap.size());
-                for (FieldMap fieldMap : fieldsMap) {
-                    selectElementList.add(new SelectElement(fieldMap.getDestField().getName(),
-                            fieldMap.getSrcField().getName()));
-                }
-                return selectElementList;
+        checkExt();
+        List<FieldMap> fieldsMap = ((DozerBeanMapperExt) dozer).getFieldsMap(classVO, classJPA, StringUtils.EMPTY);
+        if (fieldsMap.size() > 0) {
+            List<SelectElement> selectElementList = new ArrayList<SelectElement>(fieldsMap.size());
+            for (FieldMap fieldMap : fieldsMap) {
+                selectElementList.add(new SelectElement(fieldMap.getDestFieldName(),
+                        fieldMap.getSrcFieldName()));
             }
-            return Collections.emptyList();
+            return selectElementList;
         }
-        throw new DozerSupportException("Bean DozerBeanMapper not instantiated");
+        return Collections.emptyList();
+    }
+
+    public boolean checkMap(Class<?> srcClass, Class<?> destClass) {
+        if (Tuple.class.isAssignableFrom(srcClass)) {
+            checkExt();
+        } else {
+            return true;
+        }
+        return ((DozerBeanMapperExt) dozer).getClassMap(srcClass, destClass, StringUtils.EMPTY) != null;
+    }
+
+    public <E> E map(Object obj, Class<E> destType) {
+        return dozer.map(obj, destType);
     }
 }

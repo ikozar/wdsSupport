@@ -23,21 +23,8 @@
 -->
 
     <mapping>
-        <class-a>ru.ki.model.ws.ValueABC1</class-a>
-        <class-b>ru.ki.model.entity.EntityA</class-b>
-        <field>
-            <a>b2</a>
-            <b>b1.b2</b>
-        </field>
-        <field>
-            <a>c2</a>
-            <b>b1.c1.c2</b>
-        </field>
-    </mapping>
-
-    <mapping>
-        <class-a>ru.ki.model.ws.PersonalVO</class-a>
-        <class-b>ru.ki.model.entity.Personal</class-b>
+        <class-a>ru.ki.model.ws.EmployeeVO</class-a>
+        <class-b>ru.ki.model.entity.Employee</class-b>
         <field>
             <a>subdivisionName</a>
             <b>subdivision.naimSubdiv</b>
@@ -50,6 +37,11 @@
             <a>teritory</a>
             <b>subdivision.store.teritory.naimTer</b>
         </field>
+    </mapping>
+
+    <mapping>
+        <class-a>ru.ki.model.ws.EmployeeVO</class-a>
+        <class-b>javax.persistence.Tuple</class-b>
     </mapping>
 
 </mappings>

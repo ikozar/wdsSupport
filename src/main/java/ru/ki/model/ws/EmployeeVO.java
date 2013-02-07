@@ -2,21 +2,21 @@ package ru.ki.model.ws;
 
 import java.sql.Date;
 
-public class PersonalVO {
-    private String fioPers;
+public class EmployeeVO {
+    private String fullName;
     private String prSex;
-    private String prRukovod;
+    private String employeeType;
     private String subdivisionName;
     private String storeName;
     private String teritory;
-    private Date dateRozd;
+    private Date dateBorn;
 
-    public String getFioPers() {
-        return fioPers;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFioPers(String fioPers) {
-        this.fioPers = fioPers;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPrSex() {
@@ -27,12 +27,12 @@ public class PersonalVO {
         this.prSex = prSex;
     }
 
-    public String getPrRukovod() {
-        return prRukovod;
+    public String getEmployeeType() {
+        return employeeType;
     }
 
-    public void setPrRukovod(String prRukovod) {
-        this.prRukovod = prRukovod;
+    public void setEmployeeType(String employeeType) {
+        this.employeeType = employeeType;
     }
 
     public String getSubdivisionName() {
@@ -59,11 +59,11 @@ public class PersonalVO {
         this.teritory = teritory;
     }
 
-    public Date getDateRozd() {
-        return dateRozd;
+    public Date getDateBorn() {
+        return dateBorn;
     }
 
-    public void setDateRozd(Date dateRozd) {
-        this.dateRozd = dateRozd;
+    public void setDateBorn(Date dateBorn) {
+        this.dateBorn = dateBorn;
     }
 }
