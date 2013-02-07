@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
-	<property name="APP" value="absgate"/>
+	<property name="APP" value="wds"/>
 
 	<property name="DIR" value="/logs/${APP}" />
 	<property name="PATTERN"

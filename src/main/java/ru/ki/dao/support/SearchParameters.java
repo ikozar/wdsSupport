@@ -160,6 +160,14 @@ public class SearchParameters implements Serializable {
         this.selectElements = selectElements;
     }
 
+    public SelectElement findSelectElementByAlias(String name) {
+        for (SelectElement selectElement : selectElements) {
+            if (name.equals(selectElement.getAlias()))
+                return selectElement;
+        }
+        return null;
+    }
+
     public SearchParameters select(String fieldName) {
         return select(fieldName, fieldName);
     }

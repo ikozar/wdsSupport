@@ -89,7 +89,6 @@ public abstract class GenericDao<E, PK extends Serializable> {
         // order by
 //        criteriaQuery.orderBy(buildJpaOrders(sp.getOrders(), root, builder));
 
-//        TypedQuery<Tuple> typedQuery = entityManager.createQuery(criteriaQuery);
         TypedQuery typedQuery = entityManager.createQuery(criteriaQuery);
         setCacheHints(typedQuery, sp);          // cache
 
@@ -103,7 +102,6 @@ public abstract class GenericDao<E, PK extends Serializable> {
         }
 
         findResult.setResultList(typedQuery.getResultList(), typeReturn);
-criteriaQuery = null;
 
         if (sp.isGetCount()) {
             builder = entityManager.getCriteriaBuilder();
@@ -121,7 +119,6 @@ criteriaQuery = null;
             criteriaQueryCount = criteriaQueryCount.select(builder.count(joins.get(ROOT)));
 
             if (predicate != null) {
-//                criteriaQueryCount = criteriaQueryCount.where(criteriaQuery.getRestriction());
                 criteriaQueryCount = criteriaQueryCount.where(predicate);
             }
 
@@ -238,8 +235,17 @@ criteriaQuery = null;
         joins.get(ROOT).alias(ROOT);
 
         List<Predicate> predicates = new ArrayList<Predicate>(sp.getParameters().size());
-        for (FilterElement param : sp.getParameters()) {
-            String name = param.getFieldName();
+        boolean repeat = false;
+        FilterElement param = null;
+        String name = null;
+        for (Iterator<FilterElement> iterator = sp.getParameters().iterator(); true; ) {
+            if (!repeat) {
+                if (!iterator.hasNext())
+                    break;
+                param = iterator.next();
+                name = param.getFieldName();
+            }
+            repeat = false;
             if (name.contains(".")) {
                 String[] names = MyStringUtils.splitOnLastSeparator(name, '.');
                 from = findJoin(names[0], joins);
@@ -247,7 +253,20 @@ criteriaQuery = null;
             } else {
                 from = joins.get(ROOT);
             }
-            predicates.add(param.operator.getCriterion(from.get(name), builder, param.values));
+            Path att = null;
+            try {
+                att = from.get(name);
+            } catch (IllegalArgumentException e) {
+                SelectElement se = sp.findSelectElementByAlias(name);
+                if (se != null && !name.equals(se.getFieldName())) {
+                    repeat = true;
+                    name = se.getFieldName();
+                } else {
+                    log.error("Not found field " + name + " for restriction");
+                }
+                continue;
+            }
+            predicates.add(param.operator.getCriterion(att, builder, param.values));
         }
 
       return builder.and(toArray(predicates, Predicate.class));

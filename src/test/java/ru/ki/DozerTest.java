@@ -53,8 +53,8 @@ public class DozerTest extends DBTest {
         if (type == Personal.class) {
             sp.parameter("subdivision.store.teritory.naimTer", "Мытищи");
         } else if (type == PersonalVO.class) {
-//            sp.parameter("teritory", "Мытищи");
-            sp.parameter("subdivision.store.teritory.naimTer", "Мытищи");
+            sp.parameter("teritory", "Мытищи");
+//            sp.parameter("subdivision.store.teritory.naimTer", "Мытищи");
         } else {
             sp.parameter("subdivision.store.teritory.naimTer", "Мытищи");
         }
