@@ -9,52 +9,52 @@ import javax.persistence.*;
 @Entity
 public class Subdivision {
 
-    private Integer idSubdiv;
+    private Integer id;
 
     @Column(name = "id_subdiv")
     @Id
-    public Integer getIdSubdiv() {
-        return idSubdiv;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdSubdiv(Integer idSubdiv) {
-        this.idSubdiv = idSubdiv;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    private String naimSubdiv;
+    private String name;
 
-    @javax.persistence.Column(name = "naim_subdiv")
+    @javax.persistence.Column(name = "name_subdiv")
     @Basic
-    public String getNaimSubdiv() {
-        return naimSubdiv;
+    public String getName() {
+        return name;
     }
 
-    public void setNaimSubdiv(String naimSubdiv) {
-        this.naimSubdiv = naimSubdiv;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    private String rubSubdiv;
+    private String rubric;
 
     @javax.persistence.Column(name = "rub_subdiv")
     @Basic
-    public String getRubSubdiv() {
-        return rubSubdiv;
+    public String getRubric() {
+        return rubric;
     }
 
-    public void setRubSubdiv(String rubSubdiv) {
-        this.rubSubdiv = rubSubdiv;
+    public void setRubric(String rubric) {
+        this.rubric = rubric;
     }
 
-    private String naimSubdivE;
+    private String nameFull;
 
-    @javax.persistence.Column(name = "naim_subdiv_e")
+    @javax.persistence.Column(name = "name_subdiv_e")
     @Basic
-    public String getNaimSubdivE() {
-        return naimSubdivE;
+    public String getNameFull() {
+        return nameFull;
     }
 
-    public void setNaimSubdivE(String naimSubdivE) {
-        this.naimSubdivE = naimSubdivE;
+    public void setNameFull(String nameFull) {
+        this.nameFull = nameFull;
     }
 
     @Override
@@ -64,14 +64,14 @@ public class Subdivision {
 
         Subdivision that = (Subdivision) o;
 
-        if (idSubdiv != null ? !idSubdiv.equals(that.idSubdiv) : that.idSubdiv != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = idSubdiv != null ? idSubdiv.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         return result;
     }
 
@@ -88,30 +88,30 @@ public class Subdivision {
         this.typeWares = typeWares;
     }
 
-    private Subdivision subdivision;
+    private Subdivision parentPubdivision;
 
     @ManyToOne(fetch = FetchType.LAZY)
     public
     @javax.persistence.JoinColumn(name = "id_subdiv_parent", referencedColumnName = "id_subdiv", nullable = false)
-    Subdivision getSubdivision() {
-        return subdivision;
+    Subdivision getParentPubdivision() {
+        return parentPubdivision;
     }
 
-    public void setSubdivision(Subdivision subdivision) {
-        this.subdivision = subdivision;
+    public void setParentPubdivision(Subdivision parentPubdivision) {
+        this.parentPubdivision = parentPubdivision;
     }
 
-    private TypeSubdiv typeSubdiv;
+    private TypeSubdiv typeSubdivision;
 
     @ManyToOne(fetch = FetchType.LAZY)
     public
     @javax.persistence.JoinColumn(name = "id_type_subdiv", referencedColumnName = "id_type_subdiv", nullable = false)
-    TypeSubdiv getTypeSubdiv() {
-        return typeSubdiv;
+    TypeSubdiv getTypeSubdivision() {
+        return typeSubdivision;
     }
 
-    public void setTypeSubdiv(TypeSubdiv typeSubdiv) {
-        this.typeSubdiv = typeSubdiv;
+    public void setTypeSubdivision(TypeSubdiv typeSubdivision) {
+        this.typeSubdivision = typeSubdivision;
     }
 
     private Store store;

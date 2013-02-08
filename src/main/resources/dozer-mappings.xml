@@ -27,15 +27,15 @@
         <class-b>ru.ki.model.entity.Employee</class-b>
         <field>
             <a>subdivisionName</a>
-            <b>subdivision.naimSubdiv</b>
+            <b>subdivision.name</b>
         </field>
         <field>
             <a>storeName</a>
-            <b>subdivision.store.naimStore</b>
+            <b>subdivision.store.name</b>
         </field>
         <field>
             <a>teritory</a>
-            <b>subdivision.store.teritory.naimTer</b>
+            <b>subdivision.store.teritory.name</b>
         </field>
     </mapping>
 

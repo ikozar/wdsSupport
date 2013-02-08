@@ -8,71 +8,71 @@ import javax.persistence.*;
  */
 @Entity
 public class Teritory {
-    private Integer idTer;
+    private Integer id;
 
     @javax.persistence.Column(name = "id_ter")
     @Id
-    public Integer getIdTer() {
-        return idTer;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdTer(Integer idTer) {
-        this.idTer = idTer;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    private String naimTer;
+    private String name;
 
-    @javax.persistence.Column(name = "naim_ter")
+    @javax.persistence.Column(name = "name_ter")
     @Basic
-    public String getNaimTer() {
-        return naimTer;
+    public String getName() {
+        return name;
     }
 
-    public void setNaimTer(String naimTer) {
-        this.naimTer = naimTer;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    private Short prTer;
+    private Short typeTeritory;
 
     @javax.persistence.Column(name = "pr_ter")
     @Basic
-    public Short getPrTer() {
-        return prTer;
+    public Short getTypeTeritory() {
+        return typeTeritory;
     }
 
-    public void setPrTer(Short prTer) {
-        this.prTer = prTer;
+    public void setTypeTeritory(Short typeTeritory) {
+        this.typeTeritory = typeTeritory;
     }
 
-    private String rubTerit;
+    private String rubric;
 
     @javax.persistence.Column(name = "rub_terit")
     @Basic
-    public String getRubTerit() {
-        return rubTerit;
+    public String getRubric() {
+        return rubric;
     }
 
-    public void setRubTerit(String rubTerit) {
-        this.rubTerit = rubTerit;
+    public void setRubric(String rubric) {
+        this.rubric = rubric;
     }
 
-    private String naimTerE;
+    private String nameFull;
 
-    @javax.persistence.Column(name = "naim_ter_e")
+    @javax.persistence.Column(name = "name_ter_e")
     @Basic
-    public String getNaimTerE() {
-        return naimTerE;
+    public String getNameFull() {
+        return nameFull;
     }
 
-    public void setNaimTerE(String naimTerE) {
-        this.naimTerE = naimTerE;
+    public void setNameFull(String nameFull) {
+        this.nameFull = nameFull;
     }
 
     public Teritory() {
     }
 
-    public Teritory(Integer idTer) {
-        this.idTer = idTer;
+    public Teritory(Integer id) {
+        this.id = id;
     }
 
     @Override
@@ -82,9 +82,9 @@ public class Teritory {
 
         Teritory teritory = (Teritory) o;
 
-        if (getIdTer() != null ?
-                !getIdTer().equals(teritory.getIdTer()) :
-                teritory.getIdTer() != null) 
+        if (getId() != null ?
+                !getId().equals(teritory.getId()) :
+                teritory.getId() != null)
             return false;
 
         return true;
@@ -92,7 +92,7 @@ public class Teritory {
 
     @Override
     public int hashCode() {
-        int result = idTer != null ? idTer.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         return result;
     }
 
@@ -111,8 +111,8 @@ public class Teritory {
 
     @Override
     public String toString() {
-        return "Teritory{" + idTer +
-                ": " + naimTer +
+        return "Teritory{" + id +
+                ": " + name +
                 '}';
     }
 }

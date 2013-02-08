@@ -8,40 +8,40 @@ import javax.persistence.*;
  */
 @Entity
 public class Store {
-    private Integer idStore;
+    private Integer id;
 
     @javax.persistence.Column(name = "id_store")
     @Id
-    public Integer getIdStore() {
-        return idStore;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdStore(Integer idStore) {
-        this.idStore = idStore;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    private String naimStore;
+    private String name;
 
-    @javax.persistence.Column(name = "naim_store")
+    @javax.persistence.Column(name = "name_store")
     @Basic
-    public String getNaimStore() {
-        return naimStore;
+    public String getName() {
+        return name;
     }
 
-    public void setNaimStore(String naimStore) {
-        this.naimStore = naimStore;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    private String naimStoreE;
+    private String nameFull;
 
-    @javax.persistence.Column(name = "naim_store_e")
+    @javax.persistence.Column(name = "name_store_e")
     @Basic
-    public String getNaimStoreE() {
-        return naimStoreE;
+    public String getNameFull() {
+        return nameFull;
     }
 
-    public void setNaimStoreE(String naimStoreE) {
-        this.naimStoreE = naimStoreE;
+    public void setNameFull(String nameFull) {
+        this.nameFull = nameFull;
     }
 
     @Override
@@ -51,14 +51,14 @@ public class Store {
 
         Store store = (Store) o;
 
-        if (idStore != null ? !idStore.equals(store.idStore) : store.idStore != null) return false;
+        if (id != null ? !id.equals(store.id) : store.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = idStore != null ? idStore.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         return result;
     }
 
@@ -77,8 +77,8 @@ public class Store {
 
     @Override
     public String toString() {
-        return "Store{" + idStore +
-                ": " + naimStore + 
+        return "Store{" + id +
+                ": " + name +
                 '}';
     }
 

@@ -23,21 +23,21 @@ public class TypeSubdiv {
         this.idTypeSubdiv = idTypeSubdiv;
     }
 
-    private String naimTypeSubdiv;
+    private String name;
 
-    @javax.persistence.Column(name = "naim_type_subdiv")
+    @javax.persistence.Column(name = "name")
     @Basic
-    public String getNaimTypeSubdiv() {
-        return naimTypeSubdiv;
+    public String getName() {
+        return name;
     }
 
-    public void setNaimTypeSubdiv(String naimTypeSubdiv) {
-        this.naimTypeSubdiv = naimTypeSubdiv;
+    public void setName(String name) {
+        this.name = name;
     }
 
     private String naimTypeSubdivE;
 
-    @javax.persistence.Column(name = "naim_type_subdiv_e")
+    @javax.persistence.Column(name = "name_e")
     @Basic
     public String getNaimTypeSubdivE() {
         return naimTypeSubdivE;

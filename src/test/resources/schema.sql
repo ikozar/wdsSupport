@@ -28,14 +28,14 @@ CREATE TABLE realizations (
 CREATE TABLE store (
     id_store integer NOT NULL,
     id_ter integer NOT NULL,
-    naim_store character(30) NOT NULL
+    name_store character(30) NOT NULL
 );
 
-CREATE TABLE subdivision (
+CREATE TABLE parentPubdivision (
     id_subdiv integer NOT NULL,
     id_store integer NOT NULL,
     id_subdiv_parent integer NOT NULL,
-    naim_subdiv character(50) NOT NULL,
+    name_subdiv character(50) NOT NULL,
     id_type_subdiv integer NOT NULL,
     id_type_wares integer,
     rub_subdiv character(20) NOT NULL
@@ -54,14 +54,14 @@ CREATE TABLE support (
 CREATE TABLE teritory (
     id_ter integer NOT NULL,
     id_ter_parent integer DEFAULT 0 NOT NULL,
-    naim_ter character(40) NOT NULL,
+    name_ter character(40) NOT NULL,
     pr_ter smallint NOT NULL,
     rub_terit character(12) NOT NULL
 );
 
 CREATE TABLE type_subdiv (
     id_type_subdiv integer NOT NULL,
-    naim_type_subdiv character(30) NOT NULL
+    name character(30) NOT NULL
 );
 
 CREATE TABLE type_wares (

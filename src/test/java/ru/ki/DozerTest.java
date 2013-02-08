@@ -32,7 +32,7 @@ public class DozerTest extends DBTest {
     private Class type;
     SearchParameters sp;
 
-    private static final String TERITORY_FIND = "Мытищи";
+    private static final String TERITORY_FIND = "Kolomna";
 
 //    @After
     public Object checkResult() {
@@ -49,12 +49,12 @@ public class DozerTest extends DBTest {
         sp.parameter("fullName", "Persona11", RestrictionType.START);
         sp.parameter("prSex", PrSex.MAN);
         if (type == Employee.class) {
-            sp.parameter("subdivision.store.teritory.naimTer", TERITORY_FIND);
+            sp.parameter("subdivision.store.teritory.name", TERITORY_FIND);
         } else if (type == EmployeeVO.class) {
             sp.parameter("teritory", TERITORY_FIND);
 //            sp.parameter("subdivision.store.teritory.naimTer", TERITORY_FIND);
         } else {
-            sp.parameter("subdivision.store.teritory.naimTer", TERITORY_FIND);
+            sp.parameter("subdivision.store.teritory.name", TERITORY_FIND);
         }
         return sp;
     }
@@ -63,8 +63,8 @@ public class DozerTest extends DBTest {
     public void testFindTuple() {
         SearchParameters sp = preparePersonalFilter(Tuple.class);
         sp.select("fullName")
-            .select("subdivision.naimSubdiv", "naimSubdiv")
-            .select("subdivision.store.teritory.naimTer", "teritory");
+            .select("subdivision.name", "nameSubdivisiuon")
+            .select("subdivision.store.teritory.name", "teritory");
         assertEquals(((Tuple) checkResult()).get("teritory"), TERITORY_FIND);
     }
 
@@ -80,7 +80,7 @@ public class DozerTest extends DBTest {
 //    @Ignore
     public void testFindEntity() {
         SearchParameters sp = preparePersonalFilter(Employee.class);
-        assertEquals(((Employee) checkResult()).getSubdivision().getStore().getTeritory().getNaimTer(),
+        assertEquals(((Employee) checkResult()).getSubdivision().getStore().getTeritory().getName(),
                 TERITORY_FIND);
     }
 
@@ -129,12 +129,8 @@ public class DozerTest extends DBTest {
         teritory = store.join("teritory");
         List<Selection<?>> selectionList = new ArrayList<Selection<?>>();
         selectionList.add(root.get("fioPers").alias("fioPers"));
-//        selectionList.add(subdivision.get("naimSubdiv").alias("naimSubdiv"));
         selectionList.add(root.get("subdivision").alias("subdivision"));
         criteriaQuery.multiselect(selectionList);
-//        criteriaQuery.multiselect(root.get("fioPers").alias("fioPers"),
-//                subdivision.get("naimSubdiv").alias("naimSubdiv"));
-        //    List<Object[]> l = entityManager.createQuery(criteriaQuery).getResultList();
         criteriaQuery.where(cbQuery.getRestriction());
         List<Tuple> l1 = entityManager.createQuery(criteriaQuery).getResultList();
         System.out.println("----" + l1);
@@ -145,7 +141,7 @@ public class DozerTest extends DBTest {
             protected void configure() {
                 mapping(EmployeeVO.class, Tuple.class/*, TypeMappingOptions.oneWay()*/)
                         .fields("fioPers", "this")
-                        .fields("subdivisionName", field("this").mapKey("subdivision.naimSubdiv"))
+                        .fields("subdivisionName", field("this").mapKey("subdivision.name"))
                 ;
             }
         };
