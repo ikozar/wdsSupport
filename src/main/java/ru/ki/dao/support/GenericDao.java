@@ -108,28 +108,32 @@ public abstract class GenericDao<E, PK extends Serializable> {
         findResult.setResultList(typedQuery.getResultList(), typeReturn);
 
         if (sp.isGetCount()) {
-            builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Long> criteriaQueryCount = builder.createQuery(Long.class);
-            // criteriaQuery.distinct(true); // TODO: not taken into account !
+            if (sp.getMaxResults() > findResult.getCountResult()) {
+                findResult.setCount((long) findResult.getCountResult());
+            } else {
+                builder = entityManager.getCriteriaBuilder();
+                CriteriaQuery<Long> criteriaQueryCount = builder.createQuery(Long.class);
+                // criteriaQuery.distinct(true); // TODO: not taken into account !
 
-            joins.clear();
-            joins.put(ROOT, criteriaQueryCount.from(type));
-            predicate = getPredicate(joins, builder, sp);
-            if (predicate != null) {
-                criteriaQueryCount = criteriaQueryCount.where(predicate);
+                joins.clear();
+                joins.put(ROOT, criteriaQueryCount.from(type));
+                predicate = getPredicate(joins, builder, sp);
+                if (predicate != null) {
+                    criteriaQueryCount = criteriaQueryCount.where(predicate);
+                }
+
+                // count
+                criteriaQueryCount = criteriaQueryCount.select(builder.count(joins.get(ROOT)));
+
+                if (predicate != null) {
+                    criteriaQueryCount = criteriaQueryCount.where(predicate);
+                }
+
+                TypedQuery<Long> countQuery = entityManager.createQuery(criteriaQueryCount);
+                setCacheHints(countQuery, sp);
+
+                findResult.setCount(countQuery.getSingleResult());
             }
-
-            // count
-            criteriaQueryCount = criteriaQueryCount.select(builder.count(joins.get(ROOT)));
-
-            if (predicate != null) {
-                criteriaQueryCount = criteriaQueryCount.where(predicate);
-            }
-
-            TypedQuery<Long> countQuery = entityManager.createQuery(criteriaQueryCount);
-            setCacheHints(countQuery, sp);
-
-            findResult.setCount(countQuery.getSingleResult());
         }
 
         if (log.isDebugEnabled()) {
@@ -184,35 +188,29 @@ public abstract class GenericDao<E, PK extends Serializable> {
         }
     }
 
-    public E findUnique(E entity, SearchParameters sp) {
-        E result = findUniqueOrNone(entity, sp);
-
-        if (result == null) {
-            throw new NoResultException("Developper: You expected 1 result but we found none ! sample: " + entity);
-        }
-
-        return result;
+    public <T> T findUnique(SearchParameters sp, Class<T> typeReturn) {
+        return findUniqueOrNone(sp, typeReturn);
     }
 
-    /**
-     * We request at most 2, if there's more than one then we throw a  {@link javax.persistence.NonUniqueResultException}
-     * @throws javax.persistence.NonUniqueResultException
-     */
-    public E findUniqueOrNone(E entity, SearchParameters sp) {
+    public E findUnique(SearchParameters sp) {
+        return findUniqueOrNone(sp, type);
+    }
+
+    private  <T> T findUniqueOrNone(SearchParameters sp, Class<T> typeReturn) {
         // this code is an optimization to prevent using a count
         sp.setFirstResult(0);
         sp.setMaxResults(2);
-        List<E> results = Collections.EMPTY_LIST;   // find(sp);
+        FindResult<T> fr = find(sp, typeReturn);
 
-        if (results == null || results.isEmpty()) {
+        if (fr.getCount() > 1) {
+            throw new NonUniqueResultException("Developper: You expected 1 result but we found more !");
+        }
+
+        if (fr.getCount() == 0) {
             return null;
         }
 
-        if (results.size() > 1) {
-            throw new NonUniqueResultException("Developper: You expected 1 result but we found more ! sample: " + entity);
-        }
-
-        return results.iterator().next();
+        return fr.getResultList().get(0);
     }
 
     private From findJoin(String name, Map<String, From> joins) {
