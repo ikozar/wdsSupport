@@ -71,7 +71,7 @@ public class DozerTest extends DBTest {
     @Test
     public void testFindVO() {
         SearchParameters sp = preparePersonalFilter(EmployeeVO.class);
-        sp.setSelectElements(dozerSupport.getSelectionList(EmployeeVO.class, employeeDao.getJavaType()));
+        sp.setSelectElements(mapperHandler.getSelectionList(EmployeeVO.class, employeeDao.getJavaType()));
         assertEquals(((EmployeeVO) checkResult()).getTeritory(), TERITORY_FIND);
     }
 
@@ -89,14 +89,14 @@ public class DozerTest extends DBTest {
         EmployeeVO employeeVO = new EmployeeVO();
         employeeVO.setPrSex(PrSex.MAN.name());
         employeeVO.setTeritory(TERITORY_FIND);
-        Map<String, Object> msp = dozerSupport.getDozer().map(employeeVO, Map.class);
+        Map<String, Object> msp = mapperHandler.map(employeeVO, Map.class);
         for (Iterator<Map.Entry<String, Object>> iterator = msp.entrySet().iterator(); iterator.hasNext(); ) {
             if (iterator.next().getValue() == null)
                 iterator.remove();
         }
         SearchParameters sp = new SearchParameters();
         sp.setParameters(msp);
-        sp.setSelectElements(dozerSupport.getSelectionList(EmployeeVO.class, employeeDao.getJavaType()));
+        sp.setSelectElements(mapperHandler.getSelectionList(EmployeeVO.class, employeeDao.getJavaType()));
         FindResult findResult = employeeDao.find(sp, EmployeeVO.class);
         System.out.println("--- size: " + findResult.getCount() + ", type: " + findResult.getResultList().get(0).getClass().getSimpleName());
     }

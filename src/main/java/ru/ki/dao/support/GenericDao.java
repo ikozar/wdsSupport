@@ -8,25 +8,17 @@
 package ru.ki.dao.support;
 
 //import com.sun.istack.internal.NotNull;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.ConvertUtilsBean;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.ki.MyStringUtils;
-import ru.ki.dao.support.dozer.DozerSupport;
+import ru.ki.dao.support.mapper.MapperHandler;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import javax.persistence.criteria.*;
-import javax.persistence.metamodel.ManagedType;
-import javax.persistence.metamodel.SingularAttribute;
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Lists.newArrayList;
@@ -41,7 +33,7 @@ public abstract class GenericDao<E, PK extends Serializable> {
     private EntityManager entityManager;
 
     @Autowired(required = true)
-    private DozerSupport dozerSupport;
+    private MapperHandler mapperHandler;
 
     private Class<E> type;
     private Logger log;
@@ -68,7 +60,7 @@ public abstract class GenericDao<E, PK extends Serializable> {
             return getNamedQueryUtil().findByNamedQuery(sp);
         }
 */
-        FindResult<T> findResult = new FindResult<T>(dozerSupport);
+        FindResult<T> findResult = new FindResult<T>(mapperHandler);
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery criteriaQuery;

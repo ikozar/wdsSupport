@@ -1,12 +1,8 @@
 package ru.ki.dao.support;
 
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import org.dozer.DozerBeanMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
-import ru.ki.dao.support.dozer.DozerSupport;
+import ru.ki.dao.support.mapper.MapperHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,10 +13,10 @@ public class FindResult<E> {
 
     private Long count = 0L;
     private List<E> resultList;
-    private DozerSupport dozerSupport;
+    private MapperHandler mapperHandler;
 
-    public FindResult(DozerSupport dozerSupport) {
-        this.dozerSupport = dozerSupport;
+    public FindResult(MapperHandler mapperHandler) {
+        this.mapperHandler = mapperHandler;
     }
 
     public Long getCount() {
@@ -47,12 +43,12 @@ public class FindResult<E> {
         if (resultList != null && !resultList.isEmpty()) {
             count = (long) resultList.size();
             if (returnType.isAssignableFrom(resultList.get(0).getClass())
-                 || !dozerSupport.checkMap(resultList.get(0).getClass(), returnType)) {
+                 || !mapperHandler.checkMap(resultList.get(0).getClass(), returnType)) {
                 this.resultList = resultList;
             } else {
                 this.resultList = new ArrayList<E>(resultList.size());
                 for (Object result : resultList) {
-                    this.resultList.add(dozerSupport.map(result, returnType));
+                    this.resultList.add(mapperHandler.map(result, returnType));
                 }
             }
         } else {

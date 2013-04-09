@@ -1,5 +1,6 @@
-package ru.ki.dao.support.dozer;
+package ru.ki.dao.support.mapper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dozer.DozerBeanMapper;
 import org.dozer.MappingProcessor;
 import org.dozer.classmap.ClassMap;
@@ -8,11 +9,13 @@ import org.dozer.fieldmap.FieldMap;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.ki.dao.support.SelectElement;
 
 import javax.persistence.Tuple;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +24,7 @@ import java.util.Map;
  * @author  ikozar
  * date 06.02.13
  */
-public class DozerBeanMapperExt extends DozerBeanMapper {
+public class DozerBeanMapperExt extends DozerBeanMapper implements IExtMapper {
     private final Logger logger = LoggerFactory.getLogger(DozerBeanMapperExt.class);
 
     private Method getClassMapMethod;
@@ -61,7 +64,7 @@ public class DozerBeanMapperExt extends DozerBeanMapper {
         }
     }
 
-    public ClassMap getClassMap(final Class<?> srcClass, Class<?> destClass, String mapId) {
+    private ClassMap getClassMap(final Class<?> srcClass, Class<?> destClass, String mapId) {
         try {
             if (getClassMapMethod != null) {
                 ClassMap classMap = (ClassMap) getClassMapMethod.invoke((MappingProcessor) getMappingProcessor(), new Object[] {srcClass, destClass, mapId});
@@ -84,7 +87,7 @@ public class DozerBeanMapperExt extends DozerBeanMapper {
         return null;
     }
 
-    public List<FieldMap> getFieldsMap(Class<?> srcClass, Class<?> destClass, String mapId) {
+    private List<FieldMap> getFieldsMap(Class<?> srcClass, Class<?> destClass, String mapId) {
         ClassMap classMap = getClassMap(srcClass, destClass, mapId);
         if (classMap != null) {
             return  classMap.getFieldMaps();
@@ -92,4 +95,26 @@ public class DozerBeanMapperExt extends DozerBeanMapper {
         return Collections.EMPTY_LIST;
     }
 
+    @Override
+    public boolean checkMap(Class<?> srcClass, Class<?> destClass) {
+        if (Tuple.class.isAssignableFrom(srcClass)) {
+            return getClassMap(srcClass, destClass, StringUtils.EMPTY) != null;
+        }
+        return true;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<SelectElement> getSelectionList(Class<?> classVO, Class<?> classJPA) {
+        List<FieldMap> fieldsMap = getFieldsMap(classVO, classJPA, StringUtils.EMPTY);
+        if (fieldsMap.size() > 0) {
+            List<SelectElement> selectElementList = new ArrayList<SelectElement>(fieldsMap.size());
+            for (FieldMap fieldMap : fieldsMap) {
+                selectElementList.add(new SelectElement(fieldMap.getDestFieldName(),
+                        fieldMap.getSrcFieldName()));
+            }
+            return selectElementList;
+        }
+        return Collections.emptyList();
+    }
 }
