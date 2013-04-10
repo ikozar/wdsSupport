@@ -8,14 +8,15 @@
     xmlns:tx="http://www.springframework.org/schema/tx"
     >
 
-	<context:property-placeholder location="/WEB-INF/database.properties" />
+	<context:property-placeholder location="classpath:database.properties" />
+	<!--<context:property-placeholder location="database.properties" />-->
 
     <context:component-scan base-package="ru.ki.dao" use-default-filters="true" />
 
     <bean id="mapperHandler" class="ru.ki.dao.support.mapper.MapperHandler">
         <property name="mappingFiles">
             <list>
-                <value>dozer-mappings.xml</value>
+                <value>mappings-config.xml</value>
             </list>
         </property>
     </bean>

@@ -3,6 +3,7 @@ package ru.ki;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,8 +17,8 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/WEB-INF/db-context.xml"})
-//@Ignore
+@ContextConfiguration(locations = {"classpath:db-context.xml"})
+@Ignore
 public class DBTest {
 
     @PersistenceContext

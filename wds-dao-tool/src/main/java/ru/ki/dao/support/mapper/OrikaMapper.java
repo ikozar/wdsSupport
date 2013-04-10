@@ -3,6 +3,7 @@ package ru.ki.dao.support.mapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.loader.ConfigurationLoader;
+import ma.glasnost.orika.metadata.ClassMap;
 import ma.glasnost.orika.metadata.FieldMap;
 import ma.glasnost.orika.metadata.MapperKey;
 import ma.glasnost.orika.metadata.TypeFactory;
@@ -35,8 +36,12 @@ public class OrikaMapper implements IExtMapper {
     }
 
     private void load(List<String> mappingFiles) {
-        for (String file : mappingFiles) {
-            loader.load(factory, file);
+        if (mappingFiles != null) {
+            for (String file : mappingFiles) {
+                logger.debug("======================== " + getClass().getClassLoader().getResource(".").getPath());
+                logger.debug("Load config: " + file);
+                loader.load(factory, file);
+            }
         }
         orika = factory.getMapperFacade();
     }
@@ -53,7 +58,10 @@ public class OrikaMapper implements IExtMapper {
     @SuppressWarnings("unchecked")
     public List<SelectElement> getSelectionList(Class<?> classVO, Class<?> classJPA) {
         MapperKey mapperKey = new MapperKey(TypeFactory.valueOf(classJPA), TypeFactory.valueOf(classVO));
-        Set<FieldMap> fieldsMap = factory.getClassMap(mapperKey).getFieldsMapping();
+        ClassMap classMap = factory.getClassMap(mapperKey);
+        if (classMap == null)
+            return Collections.EMPTY_LIST;
+        Set<FieldMap> fieldsMap = classMap.getFieldsMapping();
         if (fieldsMap.size() > 0) {
             List<SelectElement> selectElementList = new ArrayList<SelectElement>(fieldsMap.size());
             for (FieldMap fieldMap : fieldsMap) {
