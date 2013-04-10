@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+	<property name="APP" value="wds"/>
+
+	<property name="DIR" value="/logs/${APP}" />
+	<property name="PATTERN"
+		value="|${APP}| %d{HH:mm:ss.SSS} [%thread] %-5level
+		%logger{36} - %msg%n" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<property name="ALL_FILE" value="${DIR}/all" />
+	<appender name="ALL"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${ALL_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${ALL_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>10</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>${PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="ALL"/>
+	</root>
+
+	<logger name="org.hibernate" level="INFO" />
+	<logger name="org.hibernate.type.BasicTypeRegistry" level="WARN" />
+	<logger name="org.hibernate.tool.hbm2ddl.TableMetadata" level="WARN" />
+	<logger name="org.hibernate.cfg" level="WARN" />
+
+	<logger name="ru.lic" level="ALL" />
+	<logger name="org.apache.cxf" level="INFO" />
+</configuration>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://ki.ru/model/query"
+           targetNamespace="http://ki.ru/model/query" version="1.0">
+
+    <xs:element name="queryDescriptor">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="entityClass" type="xs:string"/>
+                <xs:element name="returnType" type="xs:string" minOccurs="0"/>
+                <xs:element name="searchParameters" type="searchParameters" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="searchParameters">
+        <xs:sequence>
+            <xs:element name="filterElements" type="filterElement" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="firstResult" type="xs:int" minOccurs="0"/>
+            <xs:element name="maxResults" type="xs:int" minOccurs="0"/>
+            <xs:element name="selectElements" type="selectElement" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="filterElement">
+        <xs:sequence>
+            <xs:element name="fieldName" type="xs:string" minOccurs="0"/>
+            <xs:element name="operator" type="restrictionType" minOccurs="0"/>
+            <xs:element name="values" type="valueType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="valueType">
+        <xs:sequence>
+            <xs:element name="valueDate" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="valueDouble" type="xs:double" minOccurs="0"/>
+            <xs:element name="valueFloat" type="xs:float" minOccurs="0"/>
+            <xs:element name="valueInt" type="xs:int" minOccurs="0"/>
+            <xs:element name="valueLong" type="xs:long" minOccurs="0"/>
+            <xs:element name="valueString" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="selectElement">
+        <xs:sequence>
+            <xs:element name="alias" type="xs:string" minOccurs="0"/>
+            <xs:element name="fieldName" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="restrictionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="EQ"/>
+            <xs:enumeration value="NE"/>
+            <xs:enumeration value="LT"/>
+            <xs:enumeration value="LE"/>
+            <xs:enumeration value="GT"/>
+            <xs:enumeration value="GE"/>
+            <xs:enumeration value="LIKE"/>
+            <xs:enumeration value="START"/>
+            <xs:enumeration value="END"/>
+            <xs:enumeration value="BETWEEN"/>
+            <xs:enumeration value="IN"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
+

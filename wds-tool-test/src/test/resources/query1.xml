@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<tns:queryDescriptor xmlns:tns="http://ki.ru/model/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://ki.ru/model/query queryDescriptor.xsd">
+
+    <entityClass>Employee</entityClass>
+    <returnType>ru.ki.model.EmployeeVO</returnType>
+    <searchParameters>
+        <filterElements>
+            <fieldName>fullName</fieldName>
+            <operator>START</operator>
+            <values>
+                <valueString>Persona1</valueString>
+            </values>
+        </filterElements>
+        <filterElements>
+            <fieldName>prSex</fieldName>
+            <values>
+                <valueString>MAN</valueString>
+            </values>
+        </filterElements>
+        <filterElements>
+            <fieldName>teritory</fieldName>
+            <values>
+                <valueString>Kolomna</valueString>
+            </values>
+        </filterElements>
+    </searchParameters>
+
+</tns:queryDescriptor>
