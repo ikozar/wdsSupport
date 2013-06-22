@@ -1,8 +1,5 @@
-package ru.ki.model;
+package ru.ki.dao.support.model;
 
-import ru.ki.entity.Employee;
-
-import javax.persistence.Tuple;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;

@@ -16,13 +16,13 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ki.dao.EmployeeDao;
-import ru.ki.model.FindResult;
-import ru.ki.model.WsFindResult;
-import ru.ki.model.query.QueryDescriptor;
+import ru.ki.dao.support.model.FindResult;
+import ru.ki.dao.support.model.WsFindResult;
+import ru.ki.dao.support.model.query.QueryDescriptor;
 import ru.ki.dao.support.RestrictionType;
 import ru.ki.dao.support.SearchParameters;
 import ru.ki.entity.*;
-import ru.ki.model.EmployeeVO;
+import ru.ki.dao.support.model.EmployeeVO;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

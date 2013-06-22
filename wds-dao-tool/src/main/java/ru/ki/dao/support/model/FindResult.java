@@ -1,6 +1,5 @@
-package ru.ki.model;
+package ru.ki.dao.support.model;
 
-import javassist.bytecode.annotation.Annotation;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

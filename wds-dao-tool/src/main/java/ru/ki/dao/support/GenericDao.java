@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.ki.MyStringUtils;
 import ru.ki.dao.support.mapper.MapperHandler;
-import ru.ki.model.FindResult;
+import ru.ki.dao.support.model.FindResult;
 
 import javax.persistence.*;
 import javax.persistence.criteria.*;

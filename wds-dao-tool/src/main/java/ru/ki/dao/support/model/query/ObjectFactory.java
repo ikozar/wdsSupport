@@ -6,7 +6,7 @@
 //
 
 
-package ru.ki.model.query;
+package ru.ki.dao.support.model.query;
 
 import ru.ki.dao.support.*;
 

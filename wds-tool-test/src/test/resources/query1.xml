@@ -4,7 +4,7 @@
           xsi:schemaLocation="http://ki.ru/model/query queryDescriptor.xsd">
 
     <entityClass>Employee</entityClass>
-    <returnType>ru.ki.model.EmployeeVO</returnType>
+    <returnType>ru.ki.dao.support.model.EmployeeVO</returnType>
     <searchParameters>
         <filterElements>
             <fieldName>fullName</fieldName>
