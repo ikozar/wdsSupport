@@ -21,6 +21,7 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/dozer-5.5.0-SNAPSHOT.jar</systemPath>
         </dependency>
+<!--
         <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
@@ -33,6 +34,7 @@
             <version>1.4.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+-->
 
     </dependencies>
 

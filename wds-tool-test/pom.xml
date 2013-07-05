@@ -54,6 +54,8 @@
             <artifactId>org.eclipse.persistence.moxy</artifactId>
             <version>2.4.0</version>
         </dependency>
+
+<!--
         <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
@@ -64,6 +66,7 @@
             <artifactId>xml-configurator</artifactId>
             <version>1.4.2-SNAPSHOT</version>
         </dependency>
+-->
 
 
         <dependency>

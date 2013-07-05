@@ -126,6 +126,26 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>ma.glasnost.orika</groupId>
+            <artifactId>orika-core</artifactId>
+            <version>1.4.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ma.glasnost.orika</groupId>
+            <artifactId>xml-configurator</artifactId>
+            <version>1.4.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.parsers</groupId>
+            <artifactId>jaxp-ri</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+
+
     </dependencies>
 
     <repositories>
