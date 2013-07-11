@@ -36,22 +36,7 @@ public class OrderBy implements Serializable {
         this(fieldName, OrderByDirection.ASC);
     }
 
-    public OrderBy(SingularAttribute<?, ? extends Serializable> attribute, OrderByDirection direction) {
-        Validate.notNull(attribute);
-        Validate.notNull(direction);
-        this.fieldName = attribute.getName();
-        this.direction = direction;
-    }
-
-    public OrderBy(SingularAttribute<?, ? extends Serializable> attribute) {
-        this(attribute, OrderByDirection.ASC);
-    }
-
-    public String getColumn() {
-        return fieldName;
-    }
-
-    public String getProperty() {
+    public String getFieldName() {
         return fieldName;
     }
 

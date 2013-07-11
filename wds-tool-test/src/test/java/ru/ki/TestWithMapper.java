@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@Ignore
+//@Ignore
 public class TestWithMapper extends DBTest {
 
     @Autowired
@@ -77,6 +77,7 @@ public class TestWithMapper extends DBTest {
     public void testFindVO() {
         SearchParameters sp = preparePersonalFilter(EmployeeVO.class);
 //        sp.setSelectElements(mapperHandler.getSelectionList(EmployeeVO.class, employeeDao.getJavaType()));
+        sp.addOrderBy("subdivision.store.teritory.typeTeritory");
         assertEquals(((EmployeeVO) checkResult()).getTeritory(), TERITORY_FIND);
     }
 

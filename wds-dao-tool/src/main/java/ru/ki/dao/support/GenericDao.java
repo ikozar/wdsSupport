@@ -40,6 +40,8 @@ public abstract class GenericDao<E, PK extends Serializable> {
     private Logger log;
     private String cacheRegion;
 
+    private static Map<String, GenericDao> daoRegistry = new HashMap<String, GenericDao>();
+
     protected EntityManager getEntityManager() {
         return entityManager;
     }
@@ -51,16 +53,21 @@ public abstract class GenericDao<E, PK extends Serializable> {
         this.type = type;
         this.log = LoggerFactory.getLogger(getClass());
         this.cacheRegion = type.getCanonicalName();
+        daoRegistry.put(type.getSimpleName(), this);
+    }
+
+    public static GenericDao getDao(String typeName) {
+        return daoRegistry.get(typeName);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> FindResult<E> find(SearchParameters sp) {
+        return find(sp, type);
     }
 
     @SuppressWarnings("unchecked")
 //    public <T> FindResult<T> find(SearchParameters sp, @NotNull Class<T> typeReturn) {
     public <T> FindResult<T> find(SearchParameters sp, Class<T> typeReturn) {
-/*
-        if (sp.hasNamedQuery()) {
-            return getNamedQueryUtil().findByNamedQuery(sp);
-        }
-*/
         FindResult<T> findResult = new FindResult<T>(mapperHandler);
 
         if (typeReturn != Tuple.class && typeReturn != getJavaType()
@@ -78,6 +85,9 @@ public abstract class GenericDao<E, PK extends Serializable> {
 
         Map<String, From> joins = new LinkedHashMap<String, From>();
         joins.put(ROOT, criteriaQuery.from(type));
+        for (String join : sp.getJoins()) {
+            findOrCreateJoinByPath(join, joins, true);
+        }
         Predicate predicate = getPredicate(joins, builder, sp);
         if (predicate != null) {
             criteriaQuery = criteriaQuery.where(predicate);
@@ -87,8 +97,7 @@ public abstract class GenericDao<E, PK extends Serializable> {
             criteriaQuery.multiselect(getSelections(sp, joins));
         }
 
-        // order by
-//        criteriaQuery.orderBy(buildJpaOrders(sp.getOrders(), root, builder));
+        createOrder(sp, builder, criteriaQuery, joins);
 
         TypedQuery typedQuery = entityManager.createQuery(criteriaQuery);
         setCacheHints(typedQuery, sp);          // cache
@@ -147,16 +156,7 @@ public abstract class GenericDao<E, PK extends Serializable> {
         }
         List<Selection<?>> selectionList = new ArrayList<Selection<?>>();
         for (SelectElement se : sp.getSelectElements()) {
-            String name = se.getFieldName();
-            String[] names = MyStringUtils.splitOnLastSeparator(name, '.');
-            From from;
-            if (names == null) {
-                from = joins.get(ROOT);
-            } else {
-                from = findJoin(names[0], joins);
-                name = names[1];
-            }
-            selectionList.add(from.get(name).alias(se.getAlias()));
+            selectionList.add(findPath(se.getFieldName(), joins).alias(se.getAlias()));
         }
         return selectionList;
     }
@@ -210,7 +210,17 @@ public abstract class GenericDao<E, PK extends Serializable> {
         return fr.getResultList().get(0);
     }
 
-    private From findJoin(String name, Map<String, From> joins) {
+    private Path findPath(String name, Map<String, From> joins) {
+        Path att = null;
+        if (name.contains(".")) {
+            String[] names = MyStringUtils.splitOnLastSeparator(name, '.');
+            return findOrCreateJoinByPath(names[0], joins, false).get(names[1]);
+        } else {
+            return joins.get(ROOT).get(name);
+        }
+    }
+
+    private From findOrCreateJoinByPath(String name, Map<String, From> joins, boolean fetch) {
         From from = joins.get(name);
         if (from == null) {
             String[] names = MyStringUtils.splitOnLastSeparator(name, '.');
@@ -218,8 +228,8 @@ public abstract class GenericDao<E, PK extends Serializable> {
                 from = joins.get(ROOT).join(name);
                 from.alias(name + '_' + joins.size());
             } else {
-                from = findJoin(names[0], joins);
-                from = from.join(names[1]);
+                from = findOrCreateJoinByPath(names[0], joins, fetch);
+                from = fetch ? (From) from.fetch(names[1]) : from.join(names[1]);
                 from.alias(names[1] + '_' + joins.size());
             }
             joins.put(name, from);
@@ -233,11 +243,11 @@ public abstract class GenericDao<E, PK extends Serializable> {
         From from;
         joins.get(ROOT).alias(ROOT);
 
-        List<Predicate> predicates = new ArrayList<Predicate>(sp.getParameters().size());
+        List<Predicate> predicates = new ArrayList<Predicate>(sp.getFilterElements().size());
         boolean repeat = false;
         FilterElement param = null;
         String name = null;
-        for (Iterator<FilterElement> iterator = sp.getParameters().iterator(); true; ) {
+        for (Iterator<FilterElement> iterator = sp.getFilterElements().iterator(); true; ) {
             if (!repeat) {
                 if (!iterator.hasNext())
                     break;
@@ -245,16 +255,9 @@ public abstract class GenericDao<E, PK extends Serializable> {
                 name = param.getFieldName();
             }
             repeat = false;
-            if (name.contains(".")) {
-                String[] names = MyStringUtils.splitOnLastSeparator(name, '.');
-                from = findJoin(names[0], joins);
-                name = names[1];
-            } else {
-                from = joins.get(ROOT);
-            }
             Path att = null;
             try {
-                att = from.get(name);
+                att = findPath(name, joins);
             } catch (IllegalArgumentException e) {
                 SelectElement se = sp.findSelectElementByAlias(name);
                 if (se != null && !name.equals(se.getFieldName())) {
@@ -276,6 +279,18 @@ public abstract class GenericDao<E, PK extends Serializable> {
         }
 
       return builder.and(toArray(predicates, Predicate.class));
+    }
+
+    protected void createOrder(SearchParameters sp, CriteriaBuilder builder, CriteriaQuery criteriaQuery, Map<String, From> joins) {
+        if (!sp.hasOrders())
+            return;
+        List<Order> orders = new ArrayList<Order>(sp.getOrders().size());
+        for (OrderBy orderBy : sp.getOrders()) {
+            orders.add(orderBy.isOrderDesc() ?
+                builder.desc(findPath(orderBy.getFieldName(), joins)) :
+                builder.asc(findPath(orderBy.getFieldName(), joins)));
+        }
+        criteriaQuery.orderBy(orders);
     }
 
     /**

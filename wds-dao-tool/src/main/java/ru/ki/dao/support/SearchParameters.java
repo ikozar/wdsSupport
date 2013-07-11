@@ -21,24 +21,6 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * The SearchParameters is used to pass search parameters to the DAO layer.
  * 
- * Its usage keeps 'find' method signatures in the DAO/Service layer simple.
- * 
- * A SearchParameters helps you drive your search in the following areas:
- * <ul>
- * <li>Configure the search mode (EQUALS, LIKE, ...)</li>
- * <li>Pagination: it allows you to limit your search results to a specific range.</li>
- * <li>Allow you to specify ORDER BY and ASC/DESC</li>
- * <li>Enable/disable case sensitivity</li>
- * <li>Enable/disable 2d level cache</li>
- * <li>LIKE search against all string values: simply set the searchPattern property</li>
- * <li>Named query: if you set a named query it will be executed. Named queries can be defined in annotation or src/main/resources/META-INF/orm.xml</li>
- * </ul>
- * 
- * Note : All requests are limited to a maximum number of elements to prevent resource exhaustion.
- * 
- * @see GenericDao
- * @see SearchMode
- * @see OrderBy
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class SearchParameters implements Serializable {
@@ -46,17 +28,16 @@ public class SearchParameters implements Serializable {
 
     public static final SearchParameters GET_ALL = new SearchParameters();
 
-    // named query related
-    private String namedQuery;
+    @XmlElement
+    private List<FilterElement> filterElements = Collections.EMPTY_LIST;
 
     @XmlElement
-    private List<FilterElement> filterElements;
+    private List<SelectElement> selectElements = Collections.EMPTY_LIST;
 
     @XmlElement
-    private List<SelectElement> selectElements;
+    private List<OrderBy> orders = Collections.EMPTY_LIST;
 
-    @XmlElement
-    private List<OrderBy> orders = newArrayList();
+    private List<String> joins = Collections.EMPTY_LIST;
 
     // Pagination
     @XmlElement
@@ -64,48 +45,9 @@ public class SearchParameters implements Serializable {
     @XmlElement
     private int firstResult = 0;
 
-    // Joins
-    private List<SingularAttribute<?, ?>> leftJoinAttributes = newArrayList();
-
-    // technical parameters
-    private boolean caseSensitive = false;
-
-    // pattern to match against all strings.
-    @XmlTransient
-    private String searchPattern;
-
     // cache
     private boolean cacheable = true;
     private String cacheRegion;
-
-    /**
-     * Returns true if a named query has been set, false otherwise. When it returns true, the DAO layer will call the namedQuery.
-     */
-    public boolean hasNamedQuery() {
-        return StringUtils.isNotBlank(namedQuery);
-    }
-
-    /**
-     * Set the named query to be used by the DAO layer. Null by default.
-     */
-    public void setNamedQuery(String namedQuery) {
-        this.namedQuery = namedQuery;
-    }
-
-    /**
-     * Fluently set the named query to be used by the DAO layer. Null by default.
-     */
-    public SearchParameters namedQuery(String namedQuery) {
-        setNamedQuery(namedQuery);
-        return this;
-    }
-
-    /**
-     * Return the name of the named query to be used by the DAO layer.
-     */
-    public String getNamedQuery() {
-        return namedQuery;
-    }
 
     /**
      * Set the parameters for the named query.
@@ -122,6 +64,7 @@ public class SearchParameters implements Serializable {
     }
 
     public void setFilterElements(List<FilterElement> filterElements) {
+        validateMutable();
         this.filterElements = filterElements;
     }
 
@@ -129,11 +72,18 @@ public class SearchParameters implements Serializable {
      * Set the parameters for the named query.
      */
     public void addParameter(String name, Object value, RestrictionType operator) {
+        validateMutable();
         Validate.notNull(name, "name must not be null");
         Validate.notNull(value, "value must not be null");
-        if (filterElements == null)
+        if (filterElements == Collections.EMPTY_LIST)
             filterElements = new ArrayList<FilterElement>();
         filterElements.add(new FilterElement(name, operator, value));
+    }
+
+    private void validateMutable() {
+        if (this == GET_ALL) {
+            throw new RuntimeException("this is SearchParameters.GET_ALL, cannot be changed");
+        }
     }
 
     public SearchParameters parameter(String name, Object value) {
@@ -146,15 +96,8 @@ public class SearchParameters implements Serializable {
         return this;
     }
 
-    /**
-     * The parameters associated with the named query, if any.
-     */
-    public List<FilterElement> getParameters() {
-        return filterElements == null ? Collections.EMPTY_LIST : filterElements;
-    }
-
     public boolean isCustomSelect() {
-        return selectElements != null;
+        return selectElements != Collections.EMPTY_LIST;
     }
 
     public List<SelectElement> getSelectElements() {
@@ -162,6 +105,7 @@ public class SearchParameters implements Serializable {
     }
 
     public void setSelectElements(List<SelectElement> selectElements) {
+        validateMutable();
         this.selectElements = selectElements;
     }
 
@@ -178,98 +122,13 @@ public class SearchParameters implements Serializable {
     }
 
     public SearchParameters select(String fieldName, String alias) {
-        if (selectElements == null) {
+        validateMutable();
+        if (selectElements == Collections.EMPTY_LIST) {
             selectElements = new ArrayList<SelectElement>();
         }
         selectElements.add(new SelectElement(fieldName, alias));
         return this;
     }
-
-// -----------------------------------
-    // Search pattern support
-    // -----------------------------------
-
-    /**
-     * When it returns true, it indicates to the DAO layer to use the passed searchPattern on all string properties.
-     */
-    public boolean hasSearchPattern() {
-        return StringUtils.isNotBlank(searchPattern);
-    }
-
-    /**
-     * Set the pattern which may contains wildcards (ex: "e%r%ka" ). The passed searchPattern is used by the DAO layer on all string properties. Null by
-     * default.
-     */
-    public void setSearchPattern(String searchPattern) {
-        this.searchPattern = searchPattern;
-    }
-
-    /**
-     * Fluently set the pattern which may contains wildcards (ex: "e%r%ka" ). The passed searchPattern is used by the DAO layer on all string properties. Null
-     * by default.
-     */
-    public SearchParameters searchPattern(String searchPattern) {
-        setSearchPattern(searchPattern);
-        return this;
-    }
-
-    /**
-     * Returns the search pattern to be used by the DAO layer.
-     */
-    public String getSearchPattern() {
-        return searchPattern;
-    }
-
-    // -----------------------------------
-    // Case sensitiveness support
-    // -----------------------------------
-
-    /**
-     * Set the case sensitiveness. Defaults to false.
-     * 
-     * @param caseSensitive
-     */
-    public void setCaseSensitive(boolean caseSensitive) {
-        this.caseSensitive = caseSensitive;
-    }
-
-    /**
-     * Fluently set the case sensitiveness. Defaults to false.
-     * 
-     * @param caseSensitive
-     */
-    public SearchParameters caseSensitive(boolean caseSensitive) {
-        setCaseSensitive(caseSensitive);
-        return this;
-    }
-
-    /**
-     * Fluently set the case sensitiveness to true.
-     */
-    public SearchParameters caseSensitive() {
-        setCaseSensitive(true);
-        return this;
-    }
-
-    /**
-     * Fluently set the case sensitiveness to false.
-     */
-    public SearchParameters caseInsensitive() {
-        setCaseSensitive(false);
-        return this;
-    }
-
-    public boolean isCaseSensitive() {
-        return caseSensitive;
-    }
-
-    public boolean isCaseInsensitive() {
-        return !caseSensitive;
-    }
-
-    // -----------------------------------
-    // Order by support
-    // -----------------------------------
 
     public boolean hasOrders() {
         return !orders.isEmpty();
@@ -280,35 +139,17 @@ public class SearchParameters implements Serializable {
     }
 
     public void addOrderBy(String fieldName) {
-        Validate.notNull(fieldName, "fieldName must not be null");
-        orders.add(new OrderBy(fieldName));
+        addOrderBy(fieldName, OrderByDirection.ASC);
     }
 
     public void addOrderBy(String fieldName, OrderByDirection direction) {
         Validate.notNull(fieldName, "fieldName must not be null");
         Validate.notNull(direction, "direction must not be null");
+        validateMutable();
+        if (orders == Collections.EMPTY_LIST) {
+            orders = new ArrayList<OrderBy>();
+        }
         orders.add(new OrderBy(fieldName, direction));
-    }
-
-    public void addOrderBy(SingularAttribute<?, ? extends Serializable> attribute) {
-        Validate.notNull(attribute, "attribute must not be null");
-        orders.add(new OrderBy(attribute));
-    }
-
-    public void addOrderBy(SingularAttribute<?, ? extends Serializable> attribute, OrderByDirection direction) {
-        Validate.notNull(attribute, "fieldName must not be null");
-        Validate.notNull(direction, "direction must not be null");
-        orders.add(new OrderBy(attribute, direction));
-    }
-
-    public void addOrderBy(OrderBy orderBy) {
-        Validate.notNull(orderBy, "orderBy must not be null");
-        orders.add(orderBy);
-    }
-
-    public SearchParameters orderBy(OrderBy orderBy) {
-        addOrderBy(orderBy);
-        return this;
     }
 
     public SearchParameters orderBy(String fieldName) {
@@ -321,19 +162,21 @@ public class SearchParameters implements Serializable {
         return this;
     }
 
-    public SearchParameters orderBy(SingularAttribute<?, ? extends Serializable> attribute) {
-        addOrderBy(attribute);
-        return this;
+    public boolean hasJoins() {
+        return !joins.isEmpty();
     }
 
-    public SearchParameters orderBy(SingularAttribute<?, ? extends Serializable> attribute,
-            OrderByDirection direction) {
-        addOrderBy(attribute, direction);
-        return this;
+    public List<String> getJoins() {
+        return joins;
     }
 
-    public void clearOrders() {
-        orders.clear();
+    public void addJoin(String fieldName) {
+        Validate.notNull(fieldName, "fieldName must not be null");
+        validateMutable();
+        if (joins == Collections.EMPTY_LIST) {
+            joins = new ArrayList<String>();
+        }
+        joins.add(fieldName);
     }
 
     // -----------------------------------
