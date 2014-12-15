@@ -13,7 +13,7 @@ Requirements:
 
 ---------------------------------------------------------
 
-Автогенерации вебдатасервисов (SOA, REST CRUD + filtered collection в форме JSON и XML)
+Автогенерации вебдатасервисов SOA, REST (CRUD + filtered collection) в форме JSON и XML (см. Контракт REST сервисов.rtf)
 
 Автогенерация JPQL по значениям фильтров (sp.parameter("subdivision.store.teritory.name", "Москва"))
 
