@@ -13,7 +13,9 @@ Requirements:
 
 ---------------------------------------------------------
 
-Поддержка автогенерации вебдатасервисов (SOA, REST)
+Автогенерации вебдатасервисов (SOA, REST CRUD + filtered collection в форме JSON и XML)
+
 Автогенерация JPQL по значениям фильтров (sp.parameter("subdivision.store.teritory.name", "Москва"))
+
 Автогенерация select и fetch JPQL при получении DTO, конвертация Entry в DTO (необходима настройка маппинга полей в Dozer или Orika)
 
