@@ -9,7 +9,7 @@ import ma.glasnost.orika.metadata.MapperKey;
 import ma.glasnost.orika.metadata.TypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ki.dao.support.SelectElement;
+import ru.ki.model.query.SelectElement;
 
 import javax.persistence.Tuple;
 import java.util.*;

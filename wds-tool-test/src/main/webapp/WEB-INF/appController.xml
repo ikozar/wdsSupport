@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:p="http://www.springframework.org/schema/p"
+             xsi:schemaLocation="
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- DispatcherServlet Context: определяет настройки одного сервлета; бины,
+        которые доступны только ему -->
+
+    <!-- Разрешаем использование аннотаций Spring MVC (то есть @Controller и.т.д) -->
+    <annotation-driven />
+
+    <context:component-scan base-package="ru.ki.controller" />
+
+    <beans:bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <beans:property name="mediaTypes">
+            <beans:map>
+                <beans:entry key="json" value="application/json" />
+                <beans:entry key="xml" value="application/xml" />
+            </beans:map>
+        </beans:property>
+
+        <beans:property name="defaultViews">
+            <beans:list>
+                <beans:bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                    <beans:property name="objectMapper" ref="customJacksonObjectMapper"/>
+                </beans:bean>
+
+                <beans:bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+                    <beans:constructor-arg>
+                        <beans:bean class="org.springframework.oxm.xstream.XStreamMarshaller"
+                                    p:autodetectAnnotations="false" />
+                    </beans:constructor-arg>
+                </beans:bean>
+            </beans:list>
+        </beans:property>
+
+        <beans:property name="defaultContentType" ref="xmlMediaType" />
+        <beans:property name="ignoreAcceptHeader" value="false" />
+    </beans:bean>
+
+    <beans:bean id="xmlMediaType" class="org.springframework.http.MediaType">
+        <beans:constructor-arg index="0">
+            <beans:value>application</beans:value>
+        </beans:constructor-arg>
+        <beans:constructor-arg index="1">
+            <beans:value>json</beans:value>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <beans:bean class="ru.ki.controller.ExceptionResolver" />
+
+    <beans:import resource="classpath*:appService.xml" />
+
+</beans:beans>

@@ -9,7 +9,7 @@ import org.dozer.fieldmap.FieldMap;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ki.dao.support.SelectElement;
+import ru.ki.model.query.SelectElement;
 
 import javax.persistence.Tuple;
 import java.lang.reflect.Field;

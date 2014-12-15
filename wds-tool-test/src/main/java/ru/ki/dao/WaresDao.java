@@ -8,8 +8,8 @@
 package ru.ki.dao;
 
 import org.springframework.stereotype.Component;
-import ru.ki.entity.Wares;
-import ru.ki.dao.support.GenericDao;
+import ru.ki.entity.test.Wares;
+import ru.ki.model.query.GenericDao;
 
 @Component
 public class WaresDao extends GenericDao<Wares, Integer> {

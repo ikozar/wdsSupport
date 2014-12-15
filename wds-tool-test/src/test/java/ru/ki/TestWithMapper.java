@@ -16,13 +16,13 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ki.dao.EmployeeDao;
-import ru.ki.dao.support.model.FindResult;
-import ru.ki.dao.support.model.WsFindResult;
-import ru.ki.dao.support.model.query.QueryDescriptor;
-import ru.ki.dao.support.RestrictionType;
-import ru.ki.dao.support.SearchParameters;
-import ru.ki.entity.*;
-import ru.ki.dao.support.model.EmployeeVO;
+import ru.ki.model.FindResult;
+import ru.ki.dto.WsFindResult;
+import ru.ki.model.query.QueryDescriptor;
+import ru.ki.model.query.RestrictionType;
+import ru.ki.model.query.SearchParameters;
+import ru.ki.dto.EmployeeVO;
+import ru.ki.entity.test.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -76,7 +76,6 @@ public class TestWithMapper extends DBTest {
     @Test
     public void testFindVO() {
         SearchParameters sp = preparePersonalFilter(EmployeeVO.class);
-//        sp.setSelectElements(mapperHandler.getSelectionList(EmployeeVO.class, employeeDao.getJavaType()));
         sp.addOrderBy("subdivision.store.teritory.typeTeritory");
         assertEquals(((EmployeeVO) checkResult()).getTeritory(), TERITORY_FIND);
     }
@@ -102,7 +101,6 @@ public class TestWithMapper extends DBTest {
         }
         SearchParameters sp = new SearchParameters();
         sp.setParameters(msp);
-//        sp.setSelectElements(mapperHandler.getSelectionList(EmployeeVO.class, employeeDao.getJavaType()));
         FindResult findResult = employeeDao.find(sp, EmployeeVO.class);
         System.out.println("--- size: " + findResult.getCount() + ", type: " + findResult.getResultList().get(0).getClass().getSimpleName());
     }

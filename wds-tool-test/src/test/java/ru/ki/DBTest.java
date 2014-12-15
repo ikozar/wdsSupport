@@ -30,7 +30,7 @@ public class DBTest {
     @Autowired
     MapperHandler mapperHandler;
 
-    private static boolean initDB = false;
+    private static boolean initDB = true;
 
     @Before
 //  @Test

@@ -1,6 +1,6 @@
 package ru.ki.dao.support.mapper;
 
-import ru.ki.dao.support.SelectElement;
+import ru.ki.model.query.SelectElement;
 
 import java.util.List;
 

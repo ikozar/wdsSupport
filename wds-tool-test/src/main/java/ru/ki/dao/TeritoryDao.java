@@ -8,8 +8,8 @@
 package ru.ki.dao;
 
 import org.springframework.stereotype.Component;
-import ru.ki.entity.Teritory;
-import ru.ki.dao.support.GenericDao;
+import ru.ki.entity.test.Teritory;
+import ru.ki.model.query.GenericDao;
 
 @Component
 public class TeritoryDao extends GenericDao<Teritory, Integer> {

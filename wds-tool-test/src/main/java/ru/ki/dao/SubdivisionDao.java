@@ -8,8 +8,8 @@
 package ru.ki.dao;
 
 import org.springframework.stereotype.Component;
-import ru.ki.entity.Subdivision;
-import ru.ki.dao.support.GenericDao;
+import ru.ki.entity.test.Subdivision;
+import ru.ki.model.query.GenericDao;
 
 @Component
 public class SubdivisionDao extends GenericDao<Subdivision, Integer> {

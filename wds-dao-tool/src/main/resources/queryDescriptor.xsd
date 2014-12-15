@@ -15,16 +15,16 @@
 
     <xs:complexType name="searchParameters">
         <xs:sequence>
-            <xs:element name="filterElements" type="filterElement" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="filters" type="filterElement" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="firstResult" type="xs:int" minOccurs="0"/>
             <xs:element name="maxResults" type="xs:int" minOccurs="0"/>
-            <xs:element name="selectElements" type="selectElement" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="selects" type="selectElement" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="filterElement">
         <xs:sequence>
-            <xs:element name="fieldName" type="xs:string" minOccurs="0"/>
+            <xs:element name="field" type="xs:string" minOccurs="0"/>
             <xs:element name="operator" type="restrictionType" minOccurs="0"/>
             <xs:element name="values" type="valueType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
@@ -32,19 +32,19 @@
 
     <xs:complexType name="valueType">
         <xs:sequence>
-            <xs:element name="valueDate" type="xs:dateTime" minOccurs="0"/>
-            <xs:element name="valueDouble" type="xs:double" minOccurs="0"/>
-            <xs:element name="valueFloat" type="xs:float" minOccurs="0"/>
-            <xs:element name="valueInt" type="xs:int" minOccurs="0"/>
-            <xs:element name="valueLong" type="xs:long" minOccurs="0"/>
-            <xs:element name="valueString" type="xs:string" minOccurs="0"/>
+            <xs:element name="vDate" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="vDouble" type="xs:double" minOccurs="0"/>
+            <xs:element name="vFloat" type="xs:float" minOccurs="0"/>
+            <xs:element name="vInt" type="xs:int" minOccurs="0"/>
+            <xs:element name="vLong" type="xs:long" minOccurs="0"/>
+            <xs:element name="vString" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="selectElement">
         <xs:sequence>
             <xs:element name="alias" type="xs:string" minOccurs="0"/>
-            <xs:element name="fieldName" type="xs:string" minOccurs="0"/>
+            <xs:element name="field" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 

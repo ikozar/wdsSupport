@@ -2,7 +2,7 @@ package ru.ki.dao.support.mapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ki.dao.support.SelectElement;
+import ru.ki.model.query.SelectElement;
 
 import javax.annotation.PostConstruct;
 import java.util.List;

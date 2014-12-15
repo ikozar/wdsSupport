@@ -4,27 +4,27 @@
           xsi:schemaLocation="http://ki.ru/model/query queryDescriptor.xsd">
 
     <entityClass>Employee</entityClass>
-    <returnType>ru.ki.dao.support.model.EmployeeVO</returnType>
+    <returnType>ru.ki.dto.EmployeeVO</returnType>
     <searchParameters>
-        <filterElements>
-            <fieldName>fullName</fieldName>
+        <filters>
+            <field>fullName</field>
             <operator>START</operator>
             <values>
-                <valueString>Persona1</valueString>
+                <vString>Persona1</vString>
             </values>
-        </filterElements>
-        <filterElements>
-            <fieldName>prSex</fieldName>
+        </filters>
+        <filters>
+            <field>prSex</field>
             <values>
-                <valueString>MAN</valueString>
+                <vString>MAN</vString>
             </values>
-        </filterElements>
-        <filterElements>
-            <fieldName>teritory</fieldName>
+        </filters>
+        <filters>
+            <field>teritory</field>
             <values>
-                <valueString>Kolomna</valueString>
+                <vString>Kolomna</vString>
             </values>
-        </filterElements>
+        </filters>
     </searchParameters>
 
 </tns:queryDescriptor>

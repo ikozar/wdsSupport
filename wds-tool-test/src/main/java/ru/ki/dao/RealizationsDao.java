@@ -8,8 +8,8 @@
 package ru.ki.dao;
 
 import org.springframework.stereotype.Component;
-import ru.ki.dao.support.GenericDao;
-import ru.ki.entity.Realizations;
+import ru.ki.model.query.GenericDao;
+import ru.ki.entity.test.Realizations;
 
 /**
  * JPA 2 Data Access Object for {@link Realizations}.

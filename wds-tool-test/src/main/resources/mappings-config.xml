@@ -3,8 +3,8 @@
           xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
 
     <mapping>
-        <class-a>ru.ki.dao.support.model.EmployeeVO1</class-a>
-        <class-b>ru.ki.entity.Employee</class-b>
+        <class-a>ru.ki.dto.EmployeeVO1</class-a>
+        <class-b>ru.ki.entity.test.Employee</class-b>
         <field>
             <a>subdivisionName</a>
             <b>subdivision.name</b>
@@ -19,8 +19,8 @@
         </field>
     </mapping>
     <mapping>
-        <class-a>ru.ki.dao.support.model.EmployeeVO</class-a>
-        <class-b>ru.ki.entity.Employee</class-b>
+        <class-a>ru.ki.dto.EmployeeVO</class-a>
+        <class-b>ru.ki.entity.test.Employee</class-b>
         <field>
             <a>subdivisionName</a>
             <b>subdivision.name</b>
@@ -39,11 +39,11 @@
        reverse mapping because of problem with Dozer
     -->
     <mapping>
-        <class-a>ru.ki.dao.support.model.EmployeeVO</class-a>
+        <class-a>ru.ki.dto.EmployeeVO</class-a>
         <class-b>javax.persistence.Tuple</class-b>
     </mapping>
     <mapping>
-        <class-a>ru.ki.dao.support.model.EmployeeVO1</class-a>
+        <class-a>ru.ki.dto.EmployeeVO1</class-a>
         <class-b>javax.persistence.Tuple</class-b>
     </mapping>
 
